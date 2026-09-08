@@ -1,5 +1,7 @@
 /**
- * Invaders JS - Constants
+ * Invaders JS - (C) 2026 Alessio Saltarin (ISC) 
+ * 
+ * Constants
  */
 
 export const CANVAS_WIDTH = 672;

@@ -166,3 +166,14 @@ Before proposing or committing changes, follow this verification checklist:
      - `Space`: Start / Fire
      - `ArrowLeft` / `ArrowRight`: Move Cannon
      - `P`: Pause / Resume
+
+## 7 - Header
+
+New file header should be like the following:
+
+/**
+ * Invaders JS - (C) 2026 Alessio Saltarin (ISC)
+ * 
+ * [Brief description of the code]
+ */
+

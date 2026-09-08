@@ -1,5 +1,7 @@
 /**
- * Invaders JS - Welcome Screen (Attract Mode)
+ * Invaders JS - (C) 2026 Alessio Saltarin (ISC)
+ * 
+ * Welcome Screen (Attract Mode)
  */
 
 import { CANVAS_WIDTH, CANVAS_HEIGHT, COLORS, FONT_ARCADE } from './constants.js';

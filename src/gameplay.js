@@ -1,5 +1,7 @@
 /**
- * Invaders JS - Gameplay Session Manager
+ * Invaders JS - (C) 2026 Alessio Saltarin (ISC)
+ * 
+ * Gameplay Session Manager
  * Orchestrates Level 1 mechanics: player, barriers, aliens, collisions, scoring, and arcade HUD.
  */
 

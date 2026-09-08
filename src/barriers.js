@@ -1,5 +1,7 @@
 /**
- * Invaders JS - Destructible Bunkers / Barriers
+ * Invaders JS - (C) 2026 Alessio Saltarin (ISC)
+ * 
+ * Destructible Bunkers / Barriers
  * Models 4 defensive shields with realistic pixel-level erosion when hit by bullets or invaders.
  */
 

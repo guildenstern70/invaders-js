@@ -1,5 +1,7 @@
 /**
- * Invaders JS - Player Cannon Entity
+ * Invaders JS - (C) 2026 Alessio Saltarin (ISC)
+ * 
+ * Player Cannon Entity
  * Handles horizontal movement, authentic single-missile firing, and death animations.
  */
 

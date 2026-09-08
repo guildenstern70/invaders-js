@@ -1,5 +1,7 @@
 /**
- * Invaders JS - Main Game Entry Point
+ * Invaders JS - (C) 2026 Alessio Saltarin (ISC)
+ * 
+ * Main Game Entry Point
  * Implements the arcade canvas game loop, input handlers, state machine, and audio.
  */
 

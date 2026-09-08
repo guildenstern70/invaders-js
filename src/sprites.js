@@ -1,5 +1,7 @@
 /**
- * Invaders JS - Sprite Bitmaps and Drawing Utilities
+ * Invaders JS - (C) 2026 Alessio Saltarin (ISC)
+ * 
+ * Sprite Bitmaps and Drawing Utilities
  */
 
 import { COLORS } from './constants.js';

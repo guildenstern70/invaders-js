@@ -1,5 +1,7 @@
 /**
- * Invaders JS - Alien Fleet and Alien Projectiles
+ * Invaders JS - (C) 2026 Alessio Saltarin (ISC)
+ * 
+ * Alien Fleet and Alien Projectiles
  * Implements 5x11 grid of marching aliens with dual-frame animation,
  * accelerating step rhythm, descending bombs, and hit explosions.
  */

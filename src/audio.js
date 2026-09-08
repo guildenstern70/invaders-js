@@ -1,5 +1,7 @@
 /**
- * Invaders JS - Synthesized Web Audio API Arcade Sound System
+ * Invaders JS - (C) 2026 Alessio Saltarin (ISC)
+ * 
+ * Synthesized Web Audio API Arcade Sound System
  * Zero runtime dependencies, pure procedural sound effects.
  */
 
