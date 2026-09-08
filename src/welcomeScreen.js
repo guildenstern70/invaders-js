@@ -3,86 +3,7 @@
  */
 
 import { CANVAS_WIDTH, CANVAS_HEIGHT, COLORS, FONT_ARCADE } from './constants.js';
-
-// Classic Space Invaders 8-bit Sprite Bitmaps
-const SPRITES = {
-  // UFO (16x8)
-  ufo: {
-    color: COLORS.RED,
-    width: 16,
-    height: 8,
-    data: [
-      '....11111111....',
-      '..111111111111..',
-      '.11111111111111.',
-      '11.11.1111.11.11',
-      '1111111111111111',
-      '..111..11..111..',
-      '...1........1...',
-      '................',
-    ],
-  },
-  // Squid Invader (8x8)
-  squid: {
-    color: COLORS.CYAN,
-    width: 8,
-    height: 8,
-    data: [
-      '...11...',
-      '..1111..',
-      '.111111.',
-      '11.11.11',
-      '11111111',
-      '..1..1..',
-      '.1.11.1.',
-      '1.1..1.1',
-    ],
-  },
-  // Crab Invader (11x8)
-  crab: {
-    color: COLORS.YELLOW,
-    width: 11,
-    height: 8,
-    data: [
-      '..1.....1..',
-      '...1...1...',
-      '..1111111..',
-      '.11.111.11.',
-      '11111111111',
-      '1.1111111.1',
-      '1.1.....1.1',
-      '...11.11...',
-    ],
-  },
-  // Octopus Invader (12x8)
-  octopus: {
-    color: COLORS.GREEN,
-    width: 12,
-    height: 8,
-    data: [
-      '....1111....',
-      '..11111111..',
-      '.1111111111.',
-      '111.11.11111',
-      '111111111111',
-      '..11.11.11..',
-      '.1.1....1.1.',
-      '..1......1..',
-    ],
-  },
-};
-
-function drawPixelSprite(ctx, sprite, x, y, scale = 3) {
-  ctx.fillStyle = sprite.color;
-  for (let r = 0; r < sprite.data.length; r++) {
-    const row = sprite.data[r];
-    for (let c = 0; c < row.length; c++) {
-      if (row[c] === '1') {
-        ctx.fillRect(x + c * scale, y + r * scale, scale, scale);
-      }
-    }
-  }
-}
+import { SPRITES, drawPixelData } from './sprites.js';
 
 export class WelcomeScreen {
   constructor(getHighScoreCallback) {
@@ -176,23 +97,56 @@ export class WelcomeScreen {
     ctx.fillText('*SCORE ADVANCE TABLE*', CANVAS_WIDTH / 2, 255);
 
     const items = [
-      { sprite: SPRITES.ufo, text: '=?  MYSTERY', y: 300, scale: 3 },
-      { sprite: SPRITES.squid, text: '=30 POINTS', y: 350, scale: 3 },
-      { sprite: SPRITES.crab, text: '=20 POINTS', y: 400, scale: 3 },
-      { sprite: SPRITES.octopus, text: '=10 POINTS', y: 450, scale: 3 },
+      {
+        data: SPRITES.ufo.data,
+        color: SPRITES.ufo.color,
+        width: SPRITES.ufo.width,
+        height: SPRITES.ufo.height,
+        text: '=?  MYSTERY',
+        y: 300,
+        scale: 3,
+      },
+      {
+        data: SPRITES.squid.frames[0],
+        color: SPRITES.squid.color,
+        width: SPRITES.squid.width,
+        height: SPRITES.squid.height,
+        text: '=30 POINTS',
+        y: 350,
+        scale: 3,
+      },
+      {
+        data: SPRITES.crab.frames[0],
+        color: SPRITES.crab.color,
+        width: SPRITES.crab.width,
+        height: SPRITES.crab.height,
+        text: '=20 POINTS',
+        y: 400,
+        scale: 3,
+      },
+      {
+        data: SPRITES.octopus.frames[0],
+        color: SPRITES.octopus.color,
+        width: SPRITES.octopus.width,
+        height: SPRITES.octopus.height,
+        text: '=10 POINTS',
+        y: 450,
+        scale: 3,
+      },
     ];
 
     items.forEach((item) => {
-      const spriteW = item.sprite.width * item.scale;
+      const spriteW = item.width * item.scale;
       const startX = CANVAS_WIDTH / 2 - 130;
 
       // Draw pixel sprite
-      drawPixelSprite(
+      drawPixelData(
         ctx,
-        item.sprite,
+        item.data,
         startX,
-        item.y - (item.sprite.height * item.scale) / 2,
+        item.y - (item.height * item.scale) / 2,
         item.scale,
+        item.color,
       );
 
       // Draw points text

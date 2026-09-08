@@ -1,10 +1,12 @@
 /**
  * Invaders JS - Main Game Entry Point
- * Implements the arcade canvas game loop, input handlers, and welcome screen.
+ * Implements the arcade canvas game loop, input handlers, state machine, and audio.
  */
 
 import { CANVAS_WIDTH, CANVAS_HEIGHT, HIGH_SCORE_STORAGE_KEY, GAME_STATES } from './constants.js';
 import { WelcomeScreen } from './welcomeScreen.js';
+import { GameplaySession } from './gameplay.js';
+import { AudioManager } from './audio.js';
 
 class Game {
   constructor(canvas) {
@@ -21,12 +23,16 @@ class Game {
     this.highScore = this.loadHighScore();
     this.lastTime = performance.now();
 
+    this.audio = new AudioManager();
     this.welcomeScreen = new WelcomeScreen(() => this.highScore);
+    this.gameplay = new GameplaySession(
+      this.audio,
+      () => this.highScore,
+      (newHiScore) => this.saveHighScore(newHiScore),
+      () => this.handleGameOver(),
+    );
 
-    // Audio context for authentic arcade sound synthesis
-    this.audioCtx = null;
-
-    this.initAudio();
+    this.initAudioUnlock();
     this.initInputs();
   }
 
@@ -54,46 +60,13 @@ class Game {
     }
   }
 
-  initAudio() {
-    // Lazy audio context creation on first user interaction
+  initAudioUnlock() {
     const unlockAudio = () => {
-      if (!this.audioCtx) {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (AudioContextClass) {
-          this.audioCtx = new AudioContextClass();
-        }
-      }
-      if (this.audioCtx && this.audioCtx.state === 'suspended') {
-        this.audioCtx.resume();
-      }
+      this.audio.init();
     };
 
     window.addEventListener('keydown', unlockAudio, { once: true });
     window.addEventListener('pointerdown', unlockAudio, { once: true });
-  }
-
-  playCoinSound() {
-    if (!this.audioCtx) return;
-    try {
-      const now = this.audioCtx.currentTime;
-      const osc = this.audioCtx.createOscillator();
-      const gain = this.audioCtx.createGain();
-
-      osc.type = 'square';
-      osc.frequency.setValueAtTime(987.77, now); // B5
-      osc.frequency.setValueAtTime(1318.51, now + 0.08); // E6
-
-      gain.gain.setValueAtTime(0.15, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-
-      osc.connect(gain);
-      gain.connect(this.audioCtx.destination);
-
-      osc.start(now);
-      osc.stop(now + 0.36);
-    } catch (_e) {
-      // Audio autoplay policy or hardware error
-    }
   }
 
   initInputs() {
@@ -103,35 +76,75 @@ class Game {
         event.preventDefault();
       }
 
+      this.audio.init();
+
+      // Pause toggle
+      if (event.code === 'KeyP') {
+        this.togglePause();
+        return;
+      }
+
+      // Coin insertion: begins the game immediately
       if (event.code === 'KeyC') {
-        // Insert coin
-        this.handleInsertCoin();
-      } else if (event.code === 'Space' || event.code === 'Enter') {
-        // If welcome screen, credit check or direct start
-        this.handleStart();
+        this.handleCoinInserted();
+        return;
+      }
+
+      // Game state-specific handling
+      if (this.state === GAME_STATES.WELCOME) {
+        if (event.code === 'Space' || event.code === 'Enter') {
+          this.handleCoinInserted();
+        }
+      } else if (this.state === GAME_STATES.PLAYING) {
+        this.gameplay.handleKeyDown(event.code);
+      } else if (this.state === GAME_STATES.GAME_OVER) {
+        if (event.code === 'Space' || event.code === 'Enter') {
+          this.handleCoinInserted();
+        }
       }
     });
 
-    // Also support clicking on canvas to insert coin / start
+    window.addEventListener('keyup', (event) => {
+      if (this.state === GAME_STATES.PLAYING) {
+        this.gameplay.handleKeyUp(event.code);
+      }
+    });
+
+    // Clicking on canvas inserts coin and starts game or fires
     this.canvas.addEventListener('click', () => {
-      this.handleInsertCoin();
+      this.audio.init();
+      if (this.state === GAME_STATES.WELCOME || this.state === GAME_STATES.GAME_OVER) {
+        this.handleCoinInserted();
+      } else if (this.state === GAME_STATES.PLAYING) {
+        if (this.gameplay.player.fire()) {
+          this.audio.playShoot();
+        }
+      }
     });
   }
 
-  handleInsertCoin() {
+  handleCoinInserted() {
     this.welcomeScreen.addCredit();
-    this.playCoinSound();
+    this.audio.playCoin();
+
+    // Begin the game immediately
+    this.state = GAME_STATES.PLAYING;
+    this.gameplay.startNewGame();
+    console.log('Game started! Level 1 running.');
   }
 
-  handleStart() {
-    if (this.state === GAME_STATES.WELCOME) {
-      if (this.welcomeScreen.credits === 0) {
-        // Auto-insert a coin if player hits space directly
-        this.welcomeScreen.addCredit();
-        this.playCoinSound();
-      }
-      console.log('Game starting from Welcome Screen! Credits:', this.welcomeScreen.credits);
+  togglePause() {
+    if (this.state === GAME_STATES.PLAYING) {
+      this.state = GAME_STATES.PAUSED;
+      this.gameplay.state = GAME_STATES.PAUSED;
+    } else if (this.state === GAME_STATES.PAUSED) {
+      this.state = GAME_STATES.PLAYING;
+      this.gameplay.state = GAME_STATES.PLAYING;
     }
+  }
+
+  handleGameOver() {
+    this.state = GAME_STATES.GAME_OVER;
   }
 
   start() {
@@ -144,14 +157,20 @@ class Game {
     const deltaTime = Math.min(currentTime - this.lastTime, 100); // clamp delta to avoid huge jumps
     this.lastTime = currentTime;
 
-    // Update
+    // Ensure pixel smoothing stays disabled
+    this.ctx.imageSmoothingEnabled = false;
+
+    // State machine updates and rendering
     if (this.state === GAME_STATES.WELCOME) {
       this.welcomeScreen.update(deltaTime);
-    }
-
-    // Render
-    if (this.state === GAME_STATES.WELCOME) {
       this.welcomeScreen.render(this.ctx);
+    } else if (
+      this.state === GAME_STATES.PLAYING ||
+      this.state === GAME_STATES.PAUSED ||
+      this.state === GAME_STATES.GAME_OVER
+    ) {
+      this.gameplay.update(deltaTime);
+      this.gameplay.render(this.ctx);
     }
 
     requestAnimationFrame(this.loop.bind(this));
@@ -171,7 +190,7 @@ function init() {
   const game = new Game(canvas);
   game.start();
 
-  // Expose game instance for console inspection & testing if needed
+  // Expose game instance for console inspection & testing
   window.__invadersGame = game;
 }
 
