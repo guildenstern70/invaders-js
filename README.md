@@ -2,6 +2,8 @@
 
 Invaders JS is an authentic arcade recreation of the 1978 classic **Space Invaders**, built with HTML5 Canvas, the Web Audio API, and Vanilla JavaScript.
 
+*Play the game here: [https://invaders-js.netlify.app/](https://invaders-js.netlify.app/)*
+
 <img src="./resources/images/screenshot.png" alt="Invaders JS Screenshot" width="600">
 
 ## Getting Started
