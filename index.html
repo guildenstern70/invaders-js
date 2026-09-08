@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invaders JS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main class="arcade-cabinet">
+      <header class="game-header">
+        <h1 class="game-title">INVADERS JS</h1>
+      </header>
+
+      <div class="screen-bezel">
+        <canvas
+          id="game-canvas"
+          width="672"
+          height="768"
+          aria-label="Space Invaders Game Screen"
+          role="img"
+        ></canvas>
+      </div>
+
+      <footer class="controls-bar" aria-label="Game controls">
+        <span class="help-text"
+          ><strong>Controls:</strong> <kbd>C</kbd> Insert Coin &bull; <kbd>Space</kbd> Start / Fire
+          &bull; <kbd>◀</kbd> / <kbd>▶</kbd> Move &bull; <kbd>P</kbd> Pause</span
+        >
+      </footer>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

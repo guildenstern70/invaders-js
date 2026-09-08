@@ -1,0 +1,122 @@
+:root {
+  --bg-color: #0d0e15;
+  --cabinet-bg: #141622;
+  --bezel-border: #2c3148;
+  --screen-glow: rgba(0, 255, 128, 0.15);
+  --accent-color: #00ff80;
+  --text-color: #e2e8f0;
+  --text-muted: #94a3b8;
+  --kbd-bg: #1e2235;
+  --kbd-border: #3b4263;
+  --font-family: 'Press Start 2P', 'Courier New', Courier, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  overflow: hidden;
+}
+
+.arcade-cabinet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--cabinet-bg);
+  border: 2px solid var(--bezel-border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(0, 255, 128, 0.05);
+  max-width: 95vw;
+  max-height: 96vh;
+}
+
+.game-header {
+  margin-bottom: 0.5rem;
+}
+
+.game-title {
+  font-size: 1.1rem;
+  letter-spacing: 0.15rem;
+  text-transform: uppercase;
+  color: var(--accent-color);
+  text-shadow: 0 0 8px rgba(0, 255, 128, 0.6);
+}
+
+.screen-bezel {
+  background: #000000;
+  border: 4px solid #111420;
+  outline: 2px solid var(--bezel-border);
+  border-radius: 6px;
+  box-shadow:
+    inset 0 0 25px rgba(0, 0, 0, 0.9),
+    0 0 15px var(--screen-glow);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  max-height: calc(100dvh - 150px);
+}
+
+#game-canvas {
+  display: block;
+  background-color: #000000;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  /* Scale proportionally to fit within MacBook viewports */
+  height: min(62vh, 560px);
+  width: auto;
+  aspect-ratio: 7 / 8;
+  max-width: 100%;
+}
+
+.controls-bar {
+  margin-top: 0.75rem;
+  padding: 0.4rem 0.8rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--bezel-border);
+  border-radius: 6px;
+  text-align: center;
+  width: 100%;
+}
+
+.help-text {
+  font-size: 0.65rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  white-space: normal;
+}
+
+.help-text strong {
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+kbd {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  font-family: inherit;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
